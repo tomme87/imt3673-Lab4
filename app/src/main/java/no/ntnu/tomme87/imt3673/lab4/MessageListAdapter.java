@@ -3,6 +3,7 @@ package no.ntnu.tomme87.imt3673.lab4;
 import android.content.Context;
 import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.List;
  */
 
 public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.MessageListViewHolder> {
+    private static final String TAG = "MessageListAdapter";
     private final LayoutInflater inflater;
     private List<Message> messages = new ArrayList<>();
 
@@ -29,6 +31,17 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         notifyDataSetChanged();
     }
 
+    public void addData(Message message) {
+        this.messages.add(message);
+        notifyItemInserted(this.messages.size());
+    }
+
+    public void removeData(Message message) {
+        messages.remove(message);
+        notifyItemRemoved(this.messages.size());
+        notifyDataSetChanged();
+    }
+
     @Override
     public MessageListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = this.inflater.inflate(R.layout.message, parent, false);
@@ -38,7 +51,9 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     @Override
     public void onBindViewHolder(MessageListViewHolder holder, int position) {
         Message message = this.messages.get(position);
-        holder.message.setText(message.getContent());
+        holder.time.setText(message.getTimeString());
+        holder.nick.setText(message.getNick());
+        holder.content.setText(message.getContent());
     }
 
     @Override
@@ -48,11 +63,15 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     static class MessageListViewHolder extends RecyclerView.ViewHolder {
 
-        TextView message;
+        TextView time;
+        TextView nick;
+        TextView content;
 
         public MessageListViewHolder(View itemView) {
             super(itemView);
-            this.message = itemView.findViewById(R.id.tv_message);
+            this.time = itemView.findViewById(R.id.tv_time);
+            this.nick = itemView.findViewById(R.id.tv_nick);
+            this.content = itemView.findViewById(R.id.tv_content);
         }
     }
 }

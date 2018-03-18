@@ -8,7 +8,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_messages"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="8.5"
         android:scrollbars="vertical" />
 
@@ -19,13 +19,13 @@
 
         <EditText
             android:id="@+id/et_sendmessage"
+            style="@style/Widget.AppCompat.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableRight="@android:drawable/ic_menu_send"
             android:imeOptions="actionSend"
             android:inputType="text"
-            android:maxLines="1"
-            style="@style/Widget.AppCompat.EditText"/>
+            android:maxLines="1" />
 
     </RelativeLayout>
 
