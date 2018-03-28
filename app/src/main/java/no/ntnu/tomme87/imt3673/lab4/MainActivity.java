@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity implements GetNicknameDialogFragment.NoticeDialogListener {
     private final static String TAG = "MainActivity";
@@ -121,6 +122,9 @@ public class MainActivity extends AppCompatActivity implements GetNicknameDialog
 
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
         editor.putString(PREF_NICK, nick).apply();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(User.DOCUMENT).add(new User(nick));
     }
 
     @Override

@@ -13,4 +13,7 @@
     <string name="dialog_nickname_toast_need_nick">You need a nickname to continue!</string>
 
     <string name="auth_user_not_authenticated">Unable to auth, restart the application to try again</string>
+    <string name="data_unavailable">Unable to retrieve data, try again!</string>
+
+    <string name="tv_message_header">Messages from %1$s</string>
 </resources>

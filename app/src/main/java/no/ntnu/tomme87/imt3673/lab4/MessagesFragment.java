@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -34,7 +35,7 @@ import java.util.Arrays;
  */
 public class MessagesFragment extends Fragment {
     private static final String TAG = "MessagesFragment";
-    private static final String DOCUMENT = "messages";
+
 
     private RecyclerView recyclerView;
     private EditText sendMessageEditText;
@@ -55,6 +56,7 @@ public class MessagesFragment extends Fragment {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         this.recyclerView = getView().findViewById(R.id.rv_messages);
@@ -106,16 +108,17 @@ public class MessagesFragment extends Fragment {
         String nick = sharedPreferences.getString(MainActivity.PREF_NICK, null);
 
         Message message = new Message(nick, content);
-        db.collection(DOCUMENT).add(message);
+        db.collection(Message.DOCUMENT).add(message);
     }
 
     private void setupFirestore() {
         db = FirebaseFirestore.getInstance();
-        listenerRegistration = db.collection(DOCUMENT).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        listenerRegistration = db.collection(Message.DOCUMENT).orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 if (e != null) {
                     Log.w(TAG, "listen:error", e);
+                    Toast.makeText(getContext(), R.string.data_unavailable, Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -147,33 +150,13 @@ public class MessagesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(TAG, "Start");
         this.setupFirestore();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "Resume");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "Pause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "Stop");
         listenerRegistration.remove();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.d(TAG, "DestroyView");
-
+        messageListAdapter.clear();
     }
 }

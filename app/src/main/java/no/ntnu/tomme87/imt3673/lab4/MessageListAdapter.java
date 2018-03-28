@@ -42,6 +42,11 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         notifyDataSetChanged();
     }
 
+    public void clear() {
+        this.messages.clear();
+        notifyDataSetChanged();
+    }
+
     @Override
     public MessageListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = this.inflater.inflate(R.layout.message, parent, false);

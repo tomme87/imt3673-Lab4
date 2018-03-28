@@ -15,6 +15,8 @@ import java.util.TimeZone;
  */
 
 public class Message {
+    public static final String DOCUMENT = "messages";
+
     private static final String TAG = "Message";
     private String id = null;
     private int time;
@@ -62,7 +64,6 @@ public class Message {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
             Date date = new Date((long) this.time*1000);
-            Log.d(TAG, this.time + " -> " + date.toString());
             return sdf.format(date);
         }  catch(Exception ex){
             return "N/A";
