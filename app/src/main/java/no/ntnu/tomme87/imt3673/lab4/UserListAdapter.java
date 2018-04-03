@@ -13,8 +13,9 @@ import java.util.List;
 
 /**
  * Created by Tomme on 28.03.2018.
+ * <p>
+ * Adapter that holds all users for view
  */
-
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserListViewHolder> {
     private final LayoutInflater inflater;
     private List<User> users = new ArrayList<>();
@@ -24,7 +25,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
     }
 
     public void addUser(User user) {
-        if(!this.users.contains(user)) {
+        if (!this.users.contains(user)) {
             this.users.add(user);
             notifyItemInserted(this.users.size());
         }

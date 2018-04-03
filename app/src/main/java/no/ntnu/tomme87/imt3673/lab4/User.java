@@ -2,8 +2,9 @@ package no.ntnu.tomme87.imt3673.lab4;
 
 /**
  * Created by Tomme on 28.03.2018.
+ * <p>
+ * Class for the User object. Used for Firebase DB
  */
-
 public class User {
     public final static String DOCUMENT = "users";
 

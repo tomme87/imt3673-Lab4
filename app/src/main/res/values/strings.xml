@@ -16,4 +16,9 @@
     <string name="data_unavailable">Unable to retrieve data, try again!</string>
 
     <string name="tv_message_header">Messages from %1$s</string>
+
+    <string name="list_result_frequency_default">15</string>
+    
+    <string name="notification_title">Chat Application</string>
+    <string name="notification_text">New Message!</string>
 </resources>

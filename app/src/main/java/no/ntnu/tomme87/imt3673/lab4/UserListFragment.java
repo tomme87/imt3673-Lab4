@@ -65,6 +65,9 @@ public class UserListFragment extends Fragment {
         this.recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext()));
     }
 
+    /**
+     * Setup firebase to listen for new users.
+     */
     private void setupFirestore() {
         db = FirebaseFirestore.getInstance();
         listenerRegistration = db.collection(User.DOCUMENT).addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -109,6 +112,9 @@ public class UserListFragment extends Fragment {
         this.userListAdapter.clear();
     }
 
+    /**
+     * When we click a user in the list, show messages from that user.
+     */
     private class RecyclerTouchListener extends RecyclerView.SimpleOnItemTouchListener {
         private final String TAG = "RecyclerTouchListener";
         private GestureDetector gestureDetector;

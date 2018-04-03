@@ -5,13 +5,12 @@ import android.util.Log;
 import com.google.firebase.firestore.Exclude;
 
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Created by Tomme on 17.03.2018.
+ *
+ * Class for the message object. Used for Firebase DB
  */
 
 public class Message {

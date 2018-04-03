@@ -1,5 +1,10 @@
 package no.ntnu.tomme87.imt3673.lab4;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -11,6 +16,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements GetNicknameDialog
     private final static String TAG = "MainActivity";
 
     final static String PREF_NICK = "no.ntnu.tomme87.imt3673.lab4.nickname";
+    private static final int JOB_ID = 1002;
 
     private FirebaseAuth auth;
 
@@ -37,9 +44,12 @@ public class MainActivity extends AppCompatActivity implements GetNicknameDialog
         this.startAuth();
     }
 
+    /**
+     * Authenticate with Firebase. Sing in anonymously if not signed in.
+     */
     private void startAuth() {
         FirebaseUser user = auth.getCurrentUser();
-        if(user != null) {
+        if (user != null) {
             setupUi(user);
             return;
         }
@@ -49,13 +59,18 @@ public class MainActivity extends AppCompatActivity implements GetNicknameDialog
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                             setupUi(auth.getCurrentUser());
+                        setupUi(auth.getCurrentUser());
                     }
                 });
     }
 
+    /**
+     * Setup the UI if we got a user
+     *
+     * @param user
+     */
     private void setupUi(FirebaseUser user) {
-        if(user != null) {
+        if (user != null) {
             this.setupAuthenticatedUi(user);
             this.showNicknameDialog();
         } else {
@@ -63,7 +78,13 @@ public class MainActivity extends AppCompatActivity implements GetNicknameDialog
         }
     }
 
-    // http://www.truiton.com/2015/06/android-tabs-example-fragments-viewpager/
+    /**
+     * Setup UI with message and user tab.
+     * <p>
+     * Inspiration: http://www.truiton.com/2015/06/android-tabs-example-fragments-viewpager/
+     *
+     * @param user
+     */
     private void setupAuthenticatedUi(FirebaseUser user) {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -97,25 +118,90 @@ public class MainActivity extends AppCompatActivity implements GetNicknameDialog
         });
     }
 
+    /**
+     * Shows the dialog to input nickname.
+     */
     private void showNicknameDialog() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String nick = sharedPreferences.getString(PREF_NICK, null);
-        if(nick == null) {
+        if (nick == null) {
             Toast.makeText(this, R.string.dialog_nickname_toast_need_nick, Toast.LENGTH_LONG).show();
 
-            DialogFragment nicnameDialog = new GetNicknameDialogFragment();
-            nicnameDialog.show(getSupportFragmentManager(), GetNicknameDialogFragment.TAG);
+            DialogFragment nicknameDialog = new GetNicknameDialogFragment();
+            nicknameDialog.show(getSupportFragmentManager(), GetNicknameDialogFragment.TAG);
         }
 
 
     }
 
+    /**
+     * Setup scheduler for periodic checking of new messages.
+     */
+    private void setupScheduler() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String frequencyString = sharedPreferences.getString(SettingsFragment.FREQUENCY, getString(R.string.list_result_frequency_default));
+        long frequency = Long.parseLong(frequencyString) * 60000L; // 60k in 1 minute
+
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, new ComponentName(this, DataUpdateService.class));
+        builder.setPersisted(true)
+                .setPeriodic(frequency)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+        jobScheduler.schedule(builder.build());
+    }
+
+    /**
+     * Cancel the scheduled checking for new messages when we are using the application.
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancel(JOB_ID);
+    }
+
+    /**
+     * Start the scheduling when we are not using the application.
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit().putLong(DataUpdateService.PREF_LAST, System.currentTimeMillis() / 1000L).apply();
+        this.setupScheduler();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.actions, menu);
+        getMenuInflater().inflate(R.menu.actions, menu);
         return true;
     }
 
+    /**
+     * Show Settings when settings pressed
+     *
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            final Intent i = new Intent(this, SettingsActivity.class);
+            startActivity(i);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * When a new nickname is set in dialog.
+     * Change preferences and add it to firebase database
+     *
+     * @param nick
+     */
     @Override
     public void onNewNickname(String nick) {
         Log.d(TAG, "POSITIVE! " + nick);
@@ -127,6 +213,9 @@ public class MainActivity extends AppCompatActivity implements GetNicknameDialog
         db.collection(User.DOCUMENT).add(new User(nick));
     }
 
+    /**
+     * If the dialog is cancelled.
+     */
     @Override
     public void onCancelNickname() {
         Log.d(TAG, "NEGATIVE!");

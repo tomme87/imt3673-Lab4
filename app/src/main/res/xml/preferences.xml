@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:defaultValue="@string/list_result_frequency_default"
+        android:dialogTitle="Frequency"
+        android:entries="@array/list_result_frequency"
+        android:entryValues="@array/list_result_frequency_values"
+        android:key="pref_frequency"
+        android:summary="frequency at which the app check for new messages"
+        android:title="Frequency" />
+
+</PreferenceScreen>

@@ -16,6 +16,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+/**
+ * To show messages from a specific user.
+ */
 public class MessagesFromUserActivity extends AppCompatActivity {
     public final static String EXTRA_USER = "no.ntnu.tomme87.imt3673.lab4.USER_CLICKED";
     private static final String TAG = "MFromUserActivity";
@@ -49,6 +52,12 @@ public class MessagesFromUserActivity extends AppCompatActivity {
         this.showMessagesFromUser(nick);
     }
 
+    /**
+     * Show messages from a specific user in the view
+     * Gets messages from a nick from Firebase.
+     *
+     * @param user
+     */
     private void showMessagesFromUser(String user) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(Message.DOCUMENT)

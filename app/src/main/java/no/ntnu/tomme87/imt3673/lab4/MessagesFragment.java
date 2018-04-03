@@ -27,8 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.Arrays;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,7 +75,7 @@ public class MessagesFragment extends Fragment {
         this.sendMessageEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(i == EditorInfo.IME_ACTION_SEND) {
+                if (i == EditorInfo.IME_ACTION_SEND) {
                     sendMessage(sendMessageEditText.getText().toString());
                     sendMessageEditText.setText("");
                     return true;
@@ -86,12 +84,12 @@ public class MessagesFragment extends Fragment {
             }
         });
 
-        // https://stackoverflow.com/a/19194441
+        // from https://stackoverflow.com/a/19194441
         this.sendMessageEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (sendMessageEditText.getRight() - sendMessageEditText
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (sendMessageEditText.getRight() - sendMessageEditText
                             .getCompoundDrawables()[2].getBounds().width())) {
                         sendMessage(sendMessageEditText.getText().toString());
                         sendMessageEditText.setText("");
@@ -103,6 +101,13 @@ public class MessagesFragment extends Fragment {
         });
     }
 
+    /**
+     * When sending a message.
+     * <p>
+     * Updates firebase db with the new message.
+     *
+     * @param content
+     */
     private void sendMessage(String content) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String nick = sharedPreferences.getString(MainActivity.PREF_NICK, null);
@@ -111,6 +116,9 @@ public class MessagesFragment extends Fragment {
         db.collection(Message.DOCUMENT).add(message);
     }
 
+    /**
+     * Sets up firebase to listen for new messages
+     */
     private void setupFirestore() {
         db = FirebaseFirestore.getInstance();
         listenerRegistration = db.collection(Message.DOCUMENT).orderBy("time").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -130,7 +138,7 @@ public class MessagesFragment extends Fragment {
                             Log.d(TAG, msg.getContent());
                             msg.setId(dc.getDocument().getId());
                             messageListAdapter.addData(msg);
-                            recyclerView.scrollToPosition(messageListAdapter.getItemCount()-1);
+                            recyclerView.scrollToPosition(messageListAdapter.getItemCount() - 1);
                             break;
                         case MODIFIED:
                             Log.d(TAG, "Modified message: " + dc.getDocument().getData());

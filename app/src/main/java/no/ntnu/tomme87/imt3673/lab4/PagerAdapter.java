@@ -6,8 +6,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 /**
  * Created by Tomme on 17.03.2018.
+ * <p>
+ * Pager between tabs
+ * <p>
+ * Inspiration: http://www.truiton.com/2015/06/android-tabs-example-fragments-viewpager/
  */
-
 public class PagerAdapter extends FragmentStatePagerAdapter {
     private int nTabs;
 

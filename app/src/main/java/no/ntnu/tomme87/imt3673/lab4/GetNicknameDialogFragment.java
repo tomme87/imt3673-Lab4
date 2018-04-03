@@ -19,6 +19,7 @@ public class GetNicknameDialogFragment extends DialogFragment {
 
     public interface NoticeDialogListener {
         void onNewNickname(String nick);
+
         void onCancelNickname();
     }
 
@@ -30,6 +31,12 @@ public class GetNicknameDialogFragment extends DialogFragment {
         listener = (NoticeDialogListener) context;
     }
 
+    /**
+     * A dialog that asks for nickname of the user.
+     *
+     * @param savedInstanceState
+     * @return
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

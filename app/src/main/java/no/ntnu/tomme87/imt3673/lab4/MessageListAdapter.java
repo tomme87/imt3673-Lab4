@@ -1,7 +1,6 @@
 package no.ntnu.tomme87.imt3673.lab4;
 
 import android.content.Context;
-import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,8 +13,9 @@ import java.util.List;
 
 /**
  * Created by Tomme on 17.03.2018.
+ * <p>
+ * Adapter that holds all messages in view
  */
-
 public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.MessageListViewHolder> {
     private static final String TAG = "MessageListAdapter";
     private final LayoutInflater inflater;
