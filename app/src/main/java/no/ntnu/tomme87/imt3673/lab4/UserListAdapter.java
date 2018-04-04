@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -38,6 +37,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
 
     public void clear() {
         this.users.clear();
+        notifyDataSetChanged();
     }
 
     @Override

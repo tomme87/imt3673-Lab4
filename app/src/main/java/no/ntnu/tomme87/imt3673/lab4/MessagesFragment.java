@@ -85,6 +85,7 @@ public class MessagesFragment extends Fragment {
         });
 
         // from https://stackoverflow.com/a/19194441
+        // Linter warning: I don't need preformClick, so I don't override it.
         this.sendMessageEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {

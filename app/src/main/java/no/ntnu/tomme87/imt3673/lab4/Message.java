@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * Created by Tomme on 17.03.2018.
- *
+ * <p>
  * Class for the message object. Used for Firebase DB
  */
 
@@ -62,16 +62,16 @@ public class Message {
     public String getTimeString() {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            Date date = new Date((long) this.time*1000);
+            Date date = new Date((long) this.time * 1000);
             return sdf.format(date);
-        }  catch(Exception ex){
+        } catch (Exception ex) {
             return "N/A";
         }
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Message) {
+        if (obj instanceof Message) {
             return ((Message) obj).getId().equals(this.getId());
         }
         return false;
